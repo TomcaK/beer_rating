@@ -17,11 +17,6 @@ public class DomainMapper {
 
     private final SequenceGenerator sequenceGenerator;
 
-    /**
-     *
-     * @param rating
-     * @return
-     */
     @Nonnull
     public RatingEntity map(@Nonnull Rating rating) {
         final RatingEntity ratingEntity = new RatingEntity();
