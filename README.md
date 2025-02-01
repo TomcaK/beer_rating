@@ -1,29 +1,59 @@
-# Getting Started
+# Beer Rating
 
-### Reference Documentation
+## Description
+Application is used  to rate beers.
 
-For further reference, please consider the following sections:
+### Features
+* Gets list of beers and saved ratings.
+* Creates rating for selected beer.
+* Updates already created ratings.
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/3.4.2/gradle-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.4.2/gradle-plugin/packaging-oci-image.html)
-* [Spring Data Reactive MongoDB](https://docs.spring.io/spring-boot/3.4.2/reference/data/nosql.html#data.nosql.mongodb)
-* [Validation](https://docs.spring.io/spring-boot/3.4.2/reference/io/validation.html)
-* [Spring Web](https://docs.spring.io/spring-boot/3.4.2/reference/web/servlet.html)
+### Technologies used
+* Java
+* Spring Boot
+* MongoDB
+* Open Api
+* Hibernate validation
+* Lombok
 
-### Guides
+## Installation
 
-The following guides illustrate how to use some features concretely:
+### Prerequisites
+* Java 21
+* Gradle
+* MongoDB
 
-* [Accessing Data with MongoDB](https://spring.io/guides/gs/accessing-data-mongodb/)
-* [Validation](https://spring.io/guides/gs/validating-form-input/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+### Setup
+### Linux users
+Clone source code from `GitHub` repository.
+```
+git clone git@github.com:TomcaK/beer_rating.git
+```
+Configure application with `application.properties` file.
+```properties
+beer-rating.mongo-db.db-connection-string=mongodb://localhost:27017/beer_rating
+beer-rating.mongo-db.db-name=beer_rating
+beer-rating.data-source.url=https://random-data-api.com/api/v2/beers
+beer-rating.data-source.data-size=100
+```
+Build application with `Gradle`.
+```
+./gradlew build
+```
 
-### Additional Links
+Make sure that your MongoDB Database server is running. Check with prompt.
+```
+sudo systemctl status mongod
+```
+If the server is not running, start it.
+```
+sudo systemctl start mongod
+```
+Run the application.
+```
+java -jar build/libs/beer_rating-1.0.0.jar
+```
 
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+## Open API Documentation
+Documentation of all endpoints is accessible while the application is running on link below. 
+* [REST API Documentation](http://localhost:8080/api/swagger-ui)
