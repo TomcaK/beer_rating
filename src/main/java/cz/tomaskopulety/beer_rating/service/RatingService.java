@@ -1,6 +1,7 @@
 package cz.tomaskopulety.beer_rating.service;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import jakarta.annotation.Nonnull;
 
@@ -24,20 +25,32 @@ public class RatingService {
     private final DomainMapper mapper;
 
     @Nonnull
+    private final ReentrantReadWriteLock lock;
+
+    @Nonnull
     public Rating createRating(@Nonnull Rating rating) {
-        if (!this.beerService.existBeer(rating.getBeerId())) {
-            throw new IllegalArgumentException(String.format("Beer id: %s not found.", rating.getBeerId()));
+        try {
+            this.lock.writeLock().lock();
+            if (!this.beerService.existBeer(rating.getBeerId())) {
+                throw new IllegalArgumentException(String.format("Beer id: %s not found.", rating.getBeerId()));
+            }
+            return this.mapper.map(this.ratingRepository.save(this.mapper.map(rating)));
+        } finally {
+            this.lock.writeLock().unlock();
         }
-        final RatingEntity ratingEntity = this.ratingRepository.save(this.mapper.map(rating));
-        return this.mapper.map(ratingEntity);
     }
 
     @Nonnull
     public List<Rating> getRatings() {
-        return this.ratingRepository.findAll()
-                .stream()
-                .map(this.mapper::map)
-                .toList();
+        try {
+            this.lock.readLock().lock();
+            return this.ratingRepository.findAll()
+                    .stream()
+                    .map(this.mapper::map)
+                    .toList();
+        } finally {
+            this.lock.writeLock().unlock();
+        }
     }
 
     @Nonnull
@@ -54,7 +67,12 @@ public class RatingService {
         ratingEntity.setValue(rating.getValue() == null ? ratingEntity.getValue() : rating.getValue());
         ratingEntity.setNote(note);
 
-        return this.mapper.map(this.ratingRepository.save(ratingEntity));
+        try {
+            this.lock.writeLock().lock();
+            return this.mapper.map(this.ratingRepository.save(ratingEntity));
+        } finally {
+            this.lock.writeLock().unlock();
+        }
     }
 
 }

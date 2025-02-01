@@ -1,5 +1,7 @@
 package cz.tomaskopulety.beer_rating;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import jakarta.annotation.Nonnull;
 
 import com.mongodb.ConnectionString;
@@ -28,7 +30,7 @@ public class BeerRatingConfiguration {
 
     @Bean
     public RatingService ratingService(@Nonnull RatingRepository ratingRepository, @Nonnull BeerService beerService, @Nonnull DomainMapper domainMapper) {
-        return new RatingService(ratingRepository, beerService, domainMapper);
+        return new RatingService(ratingRepository, beerService, domainMapper, new ReentrantReadWriteLock());
     }
 
     @Bean
