@@ -1,12 +1,15 @@
 package cz.tomaskopulety.beer_rating.api.response;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BeerResponse {
 
     private final long id;
@@ -38,5 +41,8 @@ public class BeerResponse {
     private final double alcoholPercentage;
 
     private final double blgDegree;
+
+    @Nullable
+    private final BeerStatisticsResponse statistics;
 
 }

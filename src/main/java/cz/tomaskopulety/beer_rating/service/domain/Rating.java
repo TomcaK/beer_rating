@@ -14,6 +14,9 @@ public class Rating {
 
     private final long beerId;
 
+    @Nullable
+    private final String beerName;
+
     private final int value;
 
     @Nullable

@@ -5,10 +5,10 @@ import java.util.UUID;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Getter
 public class Beer {
 
@@ -44,5 +44,8 @@ public class Beer {
 
     @Nonnull
     private final Double blgDegree;
+
+    @Nullable
+    private final BeerStatistics statistics;
 
 }

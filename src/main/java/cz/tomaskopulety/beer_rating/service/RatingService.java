@@ -6,6 +6,7 @@ import jakarta.annotation.Nonnull;
 
 import cz.tomaskopulety.beer_rating.database.RatingRepository;
 import cz.tomaskopulety.beer_rating.database.module.RatingEntity;
+import cz.tomaskopulety.beer_rating.database.projection.BeerNameProjection;
 import cz.tomaskopulety.beer_rating.service.domain.Rating;
 import cz.tomaskopulety.beer_rating.service.domain.RatingUpdate;
 import cz.tomaskopulety.beer_rating.service.mapper.DomainMapper;
@@ -25,18 +26,21 @@ public class RatingService {
 
     @Nonnull
     public Rating createRating(@Nonnull Rating rating) {
-        if (!this.beerService.existBeer(rating.getBeerId())) {
-            throw new IllegalArgumentException(String.format("Beer id: %s not found.", rating.getBeerId()));
-        }
+        final BeerNameProjection beerName = this.beerService.getBeerName(rating.getBeerId());
         final RatingEntity ratingEntity = this.ratingRepository.save(this.mapper.map(rating));
-        return this.mapper.map(ratingEntity);
+        return this.mapper.map(ratingEntity,beerName.getName());
     }
 
     @Nonnull
     public List<Rating> getRatings() {
         return this.ratingRepository.findAll()
                 .stream()
-                .map(this.mapper::map)
+                .map(
+                        r -> {
+                            final BeerNameProjection beerName = this.beerService.getBeerName(r.getBeerId());
+                            return this.mapper.map(r, beerName.getName());
+                        }
+                )
                 .toList();
     }
 
@@ -54,7 +58,9 @@ public class RatingService {
         ratingEntity.setValue(rating.getValue() == null ? ratingEntity.getValue() : rating.getValue());
         ratingEntity.setNote(note);
 
-        return this.mapper.map(this.ratingRepository.save(ratingEntity));
+        final BeerNameProjection beerName = beerService.getBeerName(ratingEntity.getBeerId());
+
+        return this.mapper.map(this.ratingRepository.save(ratingEntity), beerName.getName());
     }
 
 }

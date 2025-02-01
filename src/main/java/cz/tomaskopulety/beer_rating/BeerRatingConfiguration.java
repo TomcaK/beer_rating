@@ -13,6 +13,7 @@ import cz.tomaskopulety.beer_rating.service.BeerService;
 import cz.tomaskopulety.beer_rating.service.DataService;
 import cz.tomaskopulety.beer_rating.service.RatingService;
 import cz.tomaskopulety.beer_rating.service.SequenceGenerator;
+import cz.tomaskopulety.beer_rating.service.StatisticsService;
 import cz.tomaskopulety.beer_rating.service.mapper.DomainMapper;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -80,6 +81,11 @@ public class BeerRatingConfiguration {
     @Bean
     public DataService dataService(@Nonnull BeerService beerService, @Nonnull DomainMapper domainMapper, @Nonnull BreweryClient breweryClient) {
         return new DataService(beerService, domainMapper, breweryClient);
+    }
+
+    @Bean
+    public StatisticsService statisticsService(@Nonnull BeerService beerService, @Nonnull RatingService ratingService, @Nonnull DomainMapper dbMapper) {
+        return new StatisticsService(beerService, ratingService, dbMapper);
     }
 
 }

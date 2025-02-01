@@ -47,7 +47,7 @@ public class RatingController {
     @Nonnull
     private final RatingService ratingService;
 
-    @Operation(summary = "Create rating for selected beer.", responses = {
+    @Operation(summary = "Create rating for selected beer.", description = "Rating is based on scale from 1 (lowest) to 5 (highest). User can add optional commentary to his rating. ", responses = {
             @ApiResponse(responseCode = "201", description = "Rating was created successfully.", content = {@Content(schema = @Schema(implementation = RatingResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Some of parameters are wrong.", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
@@ -76,7 +76,7 @@ public class RatingController {
         );
     }
 
-    @Operation(summary = "Update existing rating.", responses = {
+    @Operation(summary = "Update existing rating.", description = "User can modify an existing rating. Value of rating must be on scale from 1 to 5 as it was created. If note is set as empty string, previous note is deleted. If note is not sent at all, note stays untouched.", responses = {
             @ApiResponse(responseCode = "202", description = "Update of rating was accepted.", content = {@Content(schema = @Schema(implementation = RatingResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Some of parameters are wrong.", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })

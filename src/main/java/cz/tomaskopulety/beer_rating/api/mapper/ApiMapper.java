@@ -5,6 +5,7 @@ import jakarta.annotation.Nonnull;
 import cz.tomaskopulety.beer_rating.api.request.RatingCreateRequest;
 import cz.tomaskopulety.beer_rating.api.request.RatingUpdateRequest;
 import cz.tomaskopulety.beer_rating.api.response.BeerResponse;
+import cz.tomaskopulety.beer_rating.api.response.BeerStatisticsResponse;
 import cz.tomaskopulety.beer_rating.api.response.RatingResponse;
 import cz.tomaskopulety.beer_rating.service.domain.Beer;
 import cz.tomaskopulety.beer_rating.service.domain.Rating;
@@ -35,6 +36,7 @@ public class ApiMapper {
         return RatingResponse.builder()
                 .id(rating.getId())
                 .beerId(rating.getBeerId())
+                .beerName(rating.getBeerName())
                 .value(rating.getValue())
                 .note(rating.getNote())
                 .build();
@@ -42,8 +44,8 @@ public class ApiMapper {
 
     @Nonnull
     public static BeerResponse map(@Nonnull Beer beer) {
-        return BeerResponse.builder()
-                .id(beer.getId())
+        final BeerResponse.BeerResponseBuilder builder = BeerResponse.builder();
+        builder.id(beer.getId())
                 .uid(beer.getUid().toString())
                 .brand(beer.getBrand())
                 .name(beer.getName())
@@ -53,8 +55,24 @@ public class ApiMapper {
                 .ibu(beer.getIbu())
                 .malts(beer.getMalts())
                 .alcoholPercentage(beer.getAlcoholPercentage())
-                .blgDegree(beer.getBlgDegree())
-                .build();
+                .blgDegree(beer.getBlgDegree());
+
+        if (beer.getStatistics() != null) {
+            builder.statistics(
+                    BeerStatisticsResponse.builder()
+                            .averageValue(beer.getStatistics().getAverageValue())
+                            .numberOfRatings(beer.getStatistics().getNumberOfRatings())
+                            .ratings(
+                                    beer.getStatistics().getRatings()
+                                            .stream()
+                                            .map(ApiMapper::map)
+                                            .toList()
+                            )
+                            .build()
+            );
+        }
+
+        return builder.build();
     }
 
 }

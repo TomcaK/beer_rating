@@ -1,5 +1,6 @@
 package cz.tomaskopulety.beer_rating.service.mapper;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
@@ -9,6 +10,7 @@ import cz.tomaskopulety.beer_rating.database.module.RatingEntity;
 import cz.tomaskopulety.beer_rating.service.SequenceGenerator;
 import cz.tomaskopulety.beer_rating.service.domain.Beer;
 import cz.tomaskopulety.beer_rating.externalservice.response.BreweryClientBeerResponse;
+import cz.tomaskopulety.beer_rating.service.domain.BeerStatistics;
 import cz.tomaskopulety.beer_rating.service.domain.Rating;
 import lombok.AllArgsConstructor;
 
@@ -41,6 +43,35 @@ public class DomainMapper {
                 .malts(entity.getMalts())
                 .alcoholPercentage(entity.getAlcoholPercentage())
                 .blgDegree(entity.getBlgDegree())
+                .build();
+    }
+
+    @Nonnull
+    public Beer map(@Nonnull Beer beer, List<Rating> ratings) {
+        double average = ratings.stream()
+                .mapToInt(Rating::getValue)
+                .average()
+                .orElseThrow(() -> new IllegalStateException("Unexpected behavior."));
+
+        return Beer.builder()
+                .id(beer.getId())
+                .uid(beer.getUid())
+                .brand(beer.getBrand())
+                .name(beer.getName())
+                .style(beer.getStyle())
+                .hop(beer.getHop())
+                .yeast(beer.getYeast())
+                .ibu(beer.getIbu())
+                .malts(beer.getMalts())
+                .alcoholPercentage(beer.getAlcoholPercentage())
+                .blgDegree(beer.getBlgDegree())
+                .statistics(
+                        BeerStatistics.builder()
+                                .averageValue(average)
+                                .numberOfRatings(ratings.size())
+                                .ratings(ratings)
+                                .build()
+                )
                 .build();
     }
 
@@ -79,9 +110,10 @@ public class DomainMapper {
     }
 
     @Nonnull
-    public Rating map(@Nonnull RatingEntity entity) {
+    public Rating map(@Nonnull RatingEntity entity, @Nonnull String beerName) {
         return Rating.builder()
                 .id(entity.getId())
+                .beerName(beerName)
                 .beerId(entity.getBeerId())
                 .value(entity.getValue())
                 .note(entity.getNote())

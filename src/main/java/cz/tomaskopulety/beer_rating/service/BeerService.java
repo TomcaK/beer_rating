@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.annotation.Nonnull;
 
 import cz.tomaskopulety.beer_rating.database.BeerRepository;
+import cz.tomaskopulety.beer_rating.database.projection.BeerNameProjection;
 import cz.tomaskopulety.beer_rating.service.domain.Beer;
 import cz.tomaskopulety.beer_rating.service.mapper.DomainMapper;
 import lombok.AllArgsConstructor;
@@ -41,7 +42,10 @@ public class BeerService {
         return this.beerRepository.count() == 0;
     }
 
-    public boolean existBeer(long beerId) {
-        return this.beerRepository.existsById(beerId);
+    @Nonnull
+    public BeerNameProjection getBeerName(long beerId) {
+        return this.beerRepository.findNameById(beerId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Beer id: %s not found.", beerId)));
     }
+
 }

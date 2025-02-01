@@ -7,6 +7,7 @@ Application is used  to rate beers.
 * Gets list of beers and saved ratings.
 * Creates rating for selected beer.
 * Updates already created ratings.
+* Gets overall statistics of rated and unrated beers.
 
 ### Technologies used
 * Java
